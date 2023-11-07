@@ -1,2 +1,2 @@
 # rookiebunnybot2023
-code for our rookie bunnybot
+Code for our rookie bunnybot
