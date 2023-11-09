@@ -6,9 +6,16 @@ import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.Commands
 import edu.wpi.first.wpilibj2.command.PrintCommand
 import frc.robot.subsystems.ExampleSubsystem
+import com.pathplanner.lib.auto.NamedCommands
 
 object Autos
 {
+
+    init{
+        NamedCommands.registerCommand("test1", ExampleCommand())
+    }
+
+
     private val autoModeChooser = SendableChooser<AutoMode>().apply {
         AutoMode.values().forEach { addOption(it.optionName, it) }
         setDefaultOption(AutoMode.default.optionName, AutoMode.default)
