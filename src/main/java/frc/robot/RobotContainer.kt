@@ -1,11 +1,16 @@
 package frc.robot
 
+import edu.wpi.first.wpilibj.motorcontrol.MotorController
+import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import edu.wpi.first.wpilibj2.command.button.Trigger
 import frc.robot.Constants.OperatorConstants
 import frc.robot.commands.Autos
 import frc.robot.commands.ExampleCommand
 import frc.robot.subsystems.ExampleSubsystem
+import com.revrobotics.CANSparkMax
+import com.revrobotics.CANSparkMaxLowLevel
+import edu.wpi.first.wpilibj.CAN
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -20,6 +25,15 @@ import frc.robot.subsystems.ExampleSubsystem
  */
 object RobotContainer
 {
+    //Variables
+
+
+
+    private val motorLU = CANSparkMax(1, CANSparkMaxLowLevel.MotorType.kBrushless);
+    private val motorLD = CANSparkMax(1, CANSparkMaxLowLevel.MotorType.kBrushless);
+    private val motorRU = CANSparkMax(1, CANSparkMaxLowLevel.MotorType.kBrushless);
+    private val motorRD = CANSparkMax(1, CANSparkMaxLowLevel.MotorType.kBrushless);
+
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
     private val driverController = CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT)
