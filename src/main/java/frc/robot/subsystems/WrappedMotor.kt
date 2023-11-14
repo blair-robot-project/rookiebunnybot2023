@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-class WrappedMotor(id: Int) : SubsystemBase() {
+class WrappedMotor(id: Int) {
     val motor: CANSparkMax = CANSparkMax(id,MotorType.kBrushless)
     fun setVoltage(voltage: Double) {
         motor.setVoltage(voltage)
