@@ -11,7 +11,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 object Conveyor : SubsystemBase() {
     var motor: CANSparkMax
     fun createMotor(id: Int) {
-        motor = CANSparkMax(id,MotorType.kBrushLess)
+        return this.runOnce {motor = CANSparkMax(id,MotorType.kBrushLess) }
     }
     fun motorVoltage(voltage: Double): Command {
         return this.runOnce { motor.setVoltage(voltage) }
