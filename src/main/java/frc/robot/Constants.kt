@@ -13,6 +13,14 @@ object Constants
     {
         const val DRIVER_CONTROLLER_PORT = 0
     }
+    object IntakeConstants {
+        const val INTAKE_MOTOR_ID = 0
+        const val INTAKE_SOLENOID_FORWARD_CHANNEL = 1
+        const val INTAKE_SOLENOID_REVERSE_CHANNEL = 2
+    }
+    object ConveyorConstants {
+        const val CONVEYOR_MOTOR_ID = 3
+    }
 }
 
 
