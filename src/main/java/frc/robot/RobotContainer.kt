@@ -25,14 +25,6 @@ import edu.wpi.first.wpilibj.CAN
  */
 object RobotContainer
 {
-    //Variables
-
-
-
-    private val motorLU = CANSparkMax(1, CANSparkMaxLowLevel.MotorType.kBrushless);
-    private val motorLD = CANSparkMax(1, CANSparkMaxLowLevel.MotorType.kBrushless);
-    private val motorRU = CANSparkMax(1, CANSparkMaxLowLevel.MotorType.kBrushless);
-    private val motorRD = CANSparkMax(1, CANSparkMaxLowLevel.MotorType.kBrushless);
 
 
     // Replace with CommandPS4Controller or CommandJoystick if needed

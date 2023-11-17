@@ -1,0 +1,36 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Move2Shelf"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ScoreLow"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Score2Substation"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GroundPickup"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null
+}
