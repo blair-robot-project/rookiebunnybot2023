@@ -2,9 +2,12 @@ package frc.robot.subsystems
 
 import com.revrobotics.CANSparkMax
 import com.revrobotics.CANSparkMaxLowLevel
+import com.revrobotics.SparkMaxPIDController
+import edu.wpi.first.math.controller.DifferentialDriveFeedforward
+import edu.wpi.first.math.controller.SimpleMotorFeedforward
 import edu.wpi.first.math.kinematics.ChassisSpeeds
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics
-import edu.wpi.first.wpilibj.XboxController
+import edu.wpi.first.wpilibj.AnalogGyro
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 
 
@@ -15,17 +18,16 @@ class TanqDrive(
     private val leftFollower: CANSparkMax
 ) : SubsystemBase() {
 
-    private val leftEncoder = leftLeader.encoder
-    private val rightEncoder = rightLeader.encoder
 
     //below should be the width of the robot's track width in inches
     //this is creating a differential drive kinematics object
     var kinematics = DifferentialDriveKinematics(1.0)
 
+    val feedForward = DifferentialDriveFeedforward(1.0, 3.0, 4.0, 6.0)
 
 
 
-    fun setSpeed(desiredSpeed : ChassisSpeeds){
+    fun setSpeed(desiredSpeed : ChassisSpeeds, feedForward : DifferentialDriveFeedforward){
         //Here we use the ChassisSpeeds object to
 
         val wheelSpeeds = kinematics.toWheelSpeeds(desiredSpeed)
@@ -34,26 +36,53 @@ class TanqDrive(
         // Right velocity
         val rightVelocity = wheelSpeeds.rightMetersPerSecond
 
+        val ffVolts = feedForward.calculate(leftLeader.encoder.velocity, leftVelocity, rightLeader.encoder.velocity, rightVelocity, 0.02)
 
+        leftLeader.pidController.setReference(leftVelocity, CANSparkMax.ControlType.kVelocity, 0,  ffVolts.left, SparkMaxPIDController.ArbFFUnits.kVoltage)
 
+        rightLeader.pidController.setReference(rightVelocity, CANSparkMax.ControlType.kVelocity, 0, ffVolts.right, SparkMaxPIDController.ArbFFUnits.kVoltage)
+    }
+    fun getPose(){
 
+    }
+    fun resetPose(){
 
-
-
+    }
+    fun getCurrentSpeeds(){
 
     }
 
 
+
+
     companion object {
         fun createTanqDrive(arrId: IntArray): TanqDrive {
+
+            val kTrackWidth = 0.381 * 2 // meters
+            val kWheelRadius = 0.0508 // meters
+            val kEncoderResolution = 4096
 
             val leftLeader = CANSparkMax(arrId[0], CANSparkMaxLowLevel.MotorType.kBrushless)
             val rightLeader = CANSparkMax(arrId[1], CANSparkMaxLowLevel.MotorType.kBrushless)
             val leftFollower = CANSparkMax(arrId[2], CANSparkMaxLowLevel.MotorType.kBrushless)
             val rightFollower = CANSparkMax(arrId[3], CANSparkMaxLowLevel.MotorType.kBrushless)
 
+            rightLeader.inverted = true
+
             leftFollower.follow(leftLeader)
             rightFollower.follow(rightFollower)
+
+            val m_gyro = AnalogGyro(0)
+
+            /*
+            Bellow we are converting from motor rotations to meters per second so that we can feed
+            these values into the PID. The gearing is a placeholder for the ratio between
+            1 full motor spin to 1 wheel spin.
+             */
+            val gearing = 0.25
+
+            leftLeader.encoder.positionConversionFactor = 2 * Math.PI * kWheelRadius * gearing / 60
+            rightLeader.encoder.positionConversionFactor = 2 * Math.PI * kWheelRadius * gearing / 60
 
 
             //create 2 PID controllers for left and right leader motors
@@ -62,40 +91,31 @@ class TanqDrive(
 
             val rightPidController = rightLeader.pidController
 
-            //below are 2 sets of PID coefficients, one for the left pid motor and for the right one
             //these values are not set and need to be changed ********
-            val leftkP = 6e-5;
-            val leftkI = 0.0;
-            val leftkD = 0.0;
-            val leftkIz = 0.0;
-            val leftkFF = 0.000015;
-            val leftkMaxOutput = 1.0;
-            val leftkMinOutput = -1.0;
-            val leftmaxRPM = 5700;
+            val kP = 6e-5
+            val kI = 0.0
+            val kD = 0.0
+            val kIz = 0.0
+            val kFF = 0.0
+            val kMaxOutput = 1.0
+            val kMinOutput = -1.0
+            val maxRPM = 5700
 
-            val rightkP = 6e-5;
-            val rightkI = 0.0;
-            val rightkD = 0.0;
-            val rightkIz = 0.0;
-            val rightkFF = 0.000015;
-            val rightkMaxOutput = 1.0;
-            val rightkMinOutput = -1.0;
-            val rightmaxRPM = 5700;
 
             //setting pid values for left and right PID Controllers
-            leftPidController.setP(leftkP);
-            leftPidController.setI(leftkI);
-            leftPidController.setD(leftkD);
-            leftPidController.setIZone(leftkIz);
-            leftPidController.setFF(leftkFF);
-            leftPidController.setOutputRange(leftkMinOutput, leftkMaxOutput);
+            leftPidController.setP(kP)
+            leftPidController.setI(kI)
+            leftPidController.setD(kD)
+            leftPidController.setIZone(kIz)
+            leftPidController.setFF(kFF)
+            leftPidController.setOutputRange(kMinOutput, kMaxOutput)
 
-            rightPidController.setP(rightkP);
-            rightPidController.setI(rightkI);
-            rightPidController.setD(rightkD);
-            rightPidController.setIZone(rightkIz);
-            rightPidController.setFF(rightkFF);
-            rightPidController.setOutputRange(rightkMinOutput, rightkMaxOutput);
+            rightPidController.setP(kP)
+            rightPidController.setI(kI)
+            rightPidController.setD(kD)
+            rightPidController.setIZone(kIz)
+            rightPidController.setFF(kFF)
+            rightPidController.setOutputRange(kMinOutput, kMaxOutput)
 
 
 
