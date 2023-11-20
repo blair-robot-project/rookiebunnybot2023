@@ -1,5 +1,6 @@
 package frc.robot.commands
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds
 import edu.wpi.first.wpilibj2.command.CommandBase
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
@@ -19,12 +20,8 @@ class TanqDriveCommand(
 
     override fun execute() {
         var multiple = 5
-        var test = tanqDrive.kinematics.toChassisSpeeds(
-            DifferentialDriveWheelSpeeds(
-                controller.leftX * multiple,
-                controller.leftY * multiple
-            )
-        )
+
+        var test = ChassisSpeeds(-controller.leftY * multiple, 0.0, -controller.leftX * multiple,)
 
         tanqDrive.setSpeed(test)
     }
