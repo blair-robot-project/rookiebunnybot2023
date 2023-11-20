@@ -11,6 +11,8 @@ import frc.robot.subsystems.ExampleSubsystem
 import com.revrobotics.CANSparkMax
 import com.revrobotics.CANSparkMaxLowLevel
 import edu.wpi.first.wpilibj.CAN
+import edu.wpi.first.wpilibj.smartdashboard.Field2d
+import frc.robot.subsystems.TanqDrive.Companion.createTanqDrive
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -27,8 +29,11 @@ object RobotContainer
 {
 
 
+    val field = Field2d()
+
     // Replace with CommandPS4Controller or CommandJoystick if needed
-    private val driverController = CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT)
+    val driverController = CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT)
+    val TanqDrive = createTanqDrive(intArrayOf(1, 2, 3, 4), field)
 
     init
     {

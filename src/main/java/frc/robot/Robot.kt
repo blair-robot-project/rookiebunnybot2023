@@ -1,10 +1,11 @@
 package frc.robot
 
 import edu.wpi.first.wpilibj.TimedRobot
-import edu.wpi.first.wpilibj.XboxController
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
 import frc.robot.commands.Autos
+import frc.robot.commands.TanqDriveCommand
 
 
 /**
@@ -25,6 +26,7 @@ object Robot : TimedRobot()
      *the  AutoChooser on the dashboard.
      */
     private var autonomousCommand: Command = Autos.defaultAutonomousCommand
+    val robot = RobotContainer
 
 
     /**
@@ -36,8 +38,8 @@ object Robot : TimedRobot()
         // Access the RobotContainer object so that it is initialized. This will perform all our
         // button bindings, and put our autonomous chooser on the dashboard.
 
-
-        RobotContainer
+        SmartDashboard.putData(robot.field)
+        RobotContainer.TanqDrive.defaultCommand = TanqDriveCommand(RobotContainer.driverController, RobotContainer.TanqDrive)
     }
 
     /**
@@ -110,7 +112,7 @@ object Robot : TimedRobot()
     /** This method is called once when the robot is first started up.  */
     override fun simulationInit()
     {
-
+        RobotContainer.TanqDrive.defaultCommand = TanqDriveCommand(RobotContainer.driverController, RobotContainer.TanqDrive)
     }
 
     /** This method is called periodically whilst in simulation.  */

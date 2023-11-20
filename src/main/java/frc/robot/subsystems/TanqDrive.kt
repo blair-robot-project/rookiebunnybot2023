@@ -10,19 +10,20 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry
 import edu.wpi.first.wpilibj.AnalogGyro
+import edu.wpi.first.wpilibj.RobotBase
+import edu.wpi.first.wpilibj.XboxController
+import edu.wpi.first.wpilibj.smartdashboard.Field2d
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 
 
-class TanqDrive(
+open class TanqDrive (
     private val rightLeader: CANSparkMax,
     private val rightFollower: CANSparkMax,
     private val leftLeader: CANSparkMax,
     private val leftFollower: CANSparkMax,
     private val feedForward: DifferentialDriveFeedforward,
     private val gyro: AnalogGyro
-
 ) : SubsystemBase() {
-
 
     //below should be the width of the robot's track width in inches
     //this is creating a differential drive kinematics object
@@ -30,11 +31,17 @@ class TanqDrive(
     val kinematics = DifferentialDriveKinematics(1.0)
     val odometry = DifferentialDriveOdometry(gyro.rotation2d, leftLeader.encoder.position, rightLeader.encoder.position)
 
-    var pose: Pose2d = Pose2d(0.0, 0.0, Rotation2d(0.0))
-
     var desiredSpeed: ChassisSpeeds = ChassisSpeeds(0.0, 0.0, 0.0)
 
+    init {
+        if (RobotBase.isSimulation()) {
+            val field = Field2d()
+        }
+    }
 
+    fun getGyro(): AnalogGyro {
+        return gyro
+    }
 
     fun setSpeed(desiredSpeed : ChassisSpeeds){
         //Here we use the ChassisSpeeds object to
@@ -53,29 +60,23 @@ class TanqDrive(
 
         rightLeader.pidController.setReference(rightVelocity, CANSparkMax.ControlType.kVelocity, 0, ffVolts.right, SparkMaxPIDController.ArbFFUnits.kVoltage)
     }
+
     fun getPose(): Pose2d{
-        return pose
+        return Pose2d(0.0, 0.0, Rotation2d(0.0))
     }
 
     fun getCurrentSpeeds() : ChassisSpeeds{
         return desiredSpeed
     }
     fun resetPose(){
-        odometry.resetPosition(gyro.rotation2d, leftLeader.encoder.position, rightLeader.encoder.position, pose)
+        odometry.resetPosition(gyro.rotation2d, leftLeader.encoder.position, rightLeader.encoder.position, Pose2d())
     }
     override fun periodic(){
-        pose = odometry.update(gyro.rotation2d, leftLeader.encoder.position, rightLeader.encoder.position)
-
+        odometry.update(gyro.rotation2d, leftLeader.encoder.position, rightLeader.encoder.position)
     }
 
-
-
-
     companion object {
-        fun createTanqDrive(arrId: IntArray): TanqDrive {
-
-
-
+        fun createTanqDrive(arrId: IntArray, field: Field2d): TanqDrive {
             val kTrackWidth = 0.381 * 2 // meters
             val kWheelRadius = 0.0508 // meters
             val kEncoderResolution = 4096
@@ -122,7 +123,6 @@ class TanqDrive(
             val kMinOutput = -1.0
             val maxRPM = 5700
 
-
             //setting pid values for left and right PID Controllers
             leftPidController.setP(kP)
             leftPidController.setI(kI)
@@ -142,8 +142,10 @@ class TanqDrive(
             //TODO: Change gains
             val feedForward = DifferentialDriveFeedforward(1.0, 3.0, 4.0, 6.0)
 
-
-            return TanqDrive(rightLeader, rightFollower, leftLeader, leftFollower, feedForward, gyro)
+            if (RobotBase.isReal()) {
+                return TanqDrive(rightLeader, rightFollower, leftLeader, leftFollower, feedForward, gyro)
+            }
+            return TanqDriveSim(rightLeader, rightFollower, leftLeader, leftFollower, feedForward, gyro, field)
         }
     }
 }
