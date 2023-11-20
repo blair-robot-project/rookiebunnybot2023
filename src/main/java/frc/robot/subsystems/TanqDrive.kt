@@ -5,13 +5,11 @@ import com.revrobotics.CANSparkMaxLowLevel
 import com.revrobotics.SparkMaxPIDController
 import edu.wpi.first.math.controller.DifferentialDriveFeedforward
 import edu.wpi.first.math.geometry.Pose2d
-import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.kinematics.ChassisSpeeds
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry
 import edu.wpi.first.wpilibj.AnalogGyro
 import edu.wpi.first.wpilibj.RobotBase
-import edu.wpi.first.wpilibj.XboxController
 import edu.wpi.first.wpilibj.smartdashboard.Field2d
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 
@@ -34,9 +32,7 @@ open class TanqDrive (
     var desiredSpeed: ChassisSpeeds = ChassisSpeeds(0.0, 0.0, 0.0)
 
     init {
-        if (RobotBase.isSimulation()) {
-            val field = Field2d()
-        }
+        val field = Field2d()
     }
 
     fun getGyro(): AnalogGyro {
@@ -62,14 +58,14 @@ open class TanqDrive (
     }
 
     fun getPose(): Pose2d{
-        return Pose2d(0.0, 0.0, Rotation2d(0.0))
+        return odometry.poseMeters
     }
 
     fun getCurrentSpeeds() : ChassisSpeeds{
         return desiredSpeed
     }
-    fun resetPose(){
-        odometry.resetPosition(gyro.rotation2d, leftLeader.encoder.position, rightLeader.encoder.position, Pose2d())
+    fun resetPose(pose: Pose2d){
+        odometry.resetPosition(gyro.rotation2d, leftLeader.encoder.position, rightLeader.encoder.position, pose)
     }
     override fun periodic(){
         odometry.update(gyro.rotation2d, leftLeader.encoder.position, rightLeader.encoder.position)

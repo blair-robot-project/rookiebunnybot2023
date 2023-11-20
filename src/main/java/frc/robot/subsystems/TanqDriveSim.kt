@@ -4,7 +4,6 @@ import com.revrobotics.CANSparkMax
 import edu.wpi.first.math.controller.DifferentialDriveFeedforward
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.wpilibj.AnalogGyro
-import edu.wpi.first.wpilibj.Timer.getFPGATimestamp
 import edu.wpi.first.wpilibj.smartdashboard.Field2d
 
 class TanqDriveSim(
@@ -17,18 +16,21 @@ class TanqDriveSim(
     private val field: Field2d
 ): TanqDrive(rightLeader, rightFollower, leftLeader, leftFollower, feedForward, gyro) {
 
-    private var lastTime = getFPGATimestamp()
+    private var leftDist = 0.0
+    private var rightDist = 0.0
+
+    var heading = Rotation2d()
 
     override fun periodic() {
-        val currTime = getFPGATimestamp()
-        var heading = super.getGyro().rotation2d.plus(Rotation2d(super.desiredSpeed.omegaRadiansPerSecond * (currTime - lastTime)))
-        this.lastTime = currTime
+        heading += Rotation2d(desiredSpeed.omegaRadiansPerSecond * (0.020))
 
-        setSpeed(super.desiredSpeed)
+        val wheelSpeeds = kinematics.toWheelSpeeds(desiredSpeed)
+        leftDist += wheelSpeeds.leftMetersPerSecond * 0.020
+        rightDist += wheelSpeeds.rightMetersPerSecond * 0.020
 
-        field.setRobotPose(super.getPose())
+        odometry.update(heading, leftDist, rightDist)
 
-        super.periodic()
+        field.robotPose = getPose()
     }
 
 }
