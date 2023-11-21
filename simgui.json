@@ -7,16 +7,36 @@
       "/SmartDashboard/Field": "Field2d"
     },
     "windows": {
-      "/LiveWindow/Ungrouped/AnalogGyro[0]": {
-        "window": {
-          "visible": true
-        }
-      },
       "/SmartDashboard/Field": {
+        "Robot": {
+          "arrowColor": [
+            1.0,
+            1.0,
+            1.0,
+            255.0
+          ],
+          "arrowSize": 61,
+          "color": [
+            0.0,
+            0.0,
+            0.0,
+            255.0
+          ],
+          "length": 0.9143999814987183,
+          "style": "Box/Image",
+          "width": 0.9143999814987183
+        },
+        "height": 8.229599952697754,
+        "image": "/Users/andreidorobantu/Downloads/bunnybotsfield2023--.png",
+        "units": "feet",
+        "width": 16.459199905395508,
         "window": {
           "visible": true
         }
       }
     }
+  },
+  "NetworkTables View": {
+    "visible": false
   }
 }
