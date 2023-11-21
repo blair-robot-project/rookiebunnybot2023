@@ -1,15 +1,17 @@
 package frc.robot.subsystems
 
+import com.kauailabs.navx.frc.AHRS
 import com.revrobotics.CANSparkMax
 import com.revrobotics.CANSparkMaxLowLevel
 import com.revrobotics.SparkMaxPIDController
 import edu.wpi.first.math.controller.DifferentialDriveFeedforward
 import edu.wpi.first.math.geometry.Pose2d
+import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.kinematics.ChassisSpeeds
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry
-import edu.wpi.first.wpilibj.AnalogGyro
 import edu.wpi.first.wpilibj.RobotBase
+import edu.wpi.first.wpilibj.SerialPort
 import edu.wpi.first.wpilibj.smartdashboard.Field2d
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 
@@ -20,14 +22,18 @@ open class TanqDrive (
     private val leftLeader: CANSparkMax,
     private val leftFollower: CANSparkMax,
     private val feedForward: DifferentialDriveFeedforward,
-    private val gyro: AnalogGyro
+    private val gyro: AHRS
 ) : SubsystemBase() {
 
     //below should be the width of the robot's track width in inches
     //this is creating a differential drive kinematics object
     //TODO: Edit trackWidthMeters
     val kinematics = DifferentialDriveKinematics(1.0)
-    val odometry = DifferentialDriveOdometry(gyro.rotation2d, leftLeader.encoder.position, rightLeader.encoder.position)
+    val odometry = DifferentialDriveOdometry(
+        Rotation2d.fromDegrees(gyro.fusedHeading.toDouble()),
+        leftLeader.encoder.position,
+        rightLeader.encoder.position
+    )
 
     var desiredSpeed: ChassisSpeeds = ChassisSpeeds(0.0, 0.0, 0.0)
 
@@ -35,8 +41,8 @@ open class TanqDrive (
         val field = Field2d()
     }
 
-    fun getGyro(): AnalogGyro {
-        return gyro
+    fun getGyroRotation(): Rotation2d {
+        return Rotation2d.fromDegrees(gyro.fusedHeading.toDouble())
     }
 
     fun setSpeed(desiredSpeed : ChassisSpeeds){
@@ -65,10 +71,10 @@ open class TanqDrive (
         return desiredSpeed
     }
     fun resetPose(pose: Pose2d){
-        odometry.resetPosition(gyro.rotation2d, leftLeader.encoder.position, rightLeader.encoder.position, pose)
+        odometry.resetPosition(getGyroRotation(), leftLeader.encoder.position, rightLeader.encoder.position, pose)
     }
     override fun periodic(){
-        odometry.update(gyro.rotation2d, leftLeader.encoder.position, rightLeader.encoder.position)
+        odometry.update(getGyroRotation(), leftLeader.encoder.position, rightLeader.encoder.position)
     }
 
     companion object {
@@ -87,7 +93,7 @@ open class TanqDrive (
             leftFollower.follow(leftLeader)
             rightFollower.follow(rightFollower)
 
-            val gyro = AnalogGyro(0)
+            val gyro = AHRS(SerialPort.Port.kMXP)
 
             /*
             Bellow we are converting from motor rotations to meters per second so that we can feed

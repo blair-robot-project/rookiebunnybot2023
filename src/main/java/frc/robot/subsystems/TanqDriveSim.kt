@@ -1,9 +1,9 @@
 package frc.robot.subsystems
 
+import com.kauailabs.navx.frc.AHRS
 import com.revrobotics.CANSparkMax
 import edu.wpi.first.math.controller.DifferentialDriveFeedforward
 import edu.wpi.first.math.geometry.Rotation2d
-import edu.wpi.first.wpilibj.AnalogGyro
 import edu.wpi.first.wpilibj.smartdashboard.Field2d
 
 class TanqDriveSim(
@@ -12,7 +12,7 @@ class TanqDriveSim(
     private val leftLeader: CANSparkMax,
     private val leftFollower: CANSparkMax,
     private val feedForward: DifferentialDriveFeedforward,
-    private val gyro: AnalogGyro,
+    private val gyro: AHRS,
     private val field: Field2d
 ): TanqDrive(rightLeader, rightFollower, leftLeader, leftFollower, feedForward, gyro) {
 
