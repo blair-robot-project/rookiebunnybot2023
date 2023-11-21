@@ -1,12 +1,13 @@
 package frc.robot.commands
 
+import com.pathplanner.lib.auto.AutoBuilder
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
-import edu.wpi.first.wpilibj2.command.CommandBase
 import edu.wpi.first.wpilibj2.command.Command
-import edu.wpi.first.wpilibj2.command.Commands
 import edu.wpi.first.wpilibj2.command.PrintCommand
-import frc.robot.subsystems.ExampleSubsystem
 import com.pathplanner.lib.auto.NamedCommands
+import com.pathplanner.lib.commands.PathPlannerAuto
+import com.pathplanner.lib.util.ReplanningConfig
+import frc.robot.RobotContainer
 
 object Autos
 {
@@ -28,8 +29,19 @@ object Autos
         get() = autoModeChooser.selected?.command ?: defaultAutonomousCommand
 
     /** Example static factory for an autonomous command.  */
-    private fun exampleAuto(): CommandBase =
-        Commands.sequence(ExampleSubsystem.exampleMethodCommand(), ExampleCommand())
+    private fun exampleAuto(): Command {
+        AutoBuilder.configureRamsete(
+            RobotContainer.TanqDrive::getPose, // Robot pose supplier
+            RobotContainer.TanqDrive::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+            RobotContainer.TanqDrive::getCurrentSpeeds, // Current ChassisSpeeds supplier
+            RobotContainer.TanqDrive::setSpeed, // Method that will drive the robot given ChassisSpeeds
+            ReplanningConfig(), // Default path replanning config. See the API for the options here
+            RobotContainer.TanqDrive // Reference to this subsystem to set requirements
+        )
+
+        return PathPlannerAuto("1ScorePickup")
+    }
+
 
     private fun exampleAuto2() = PrintCommand("An example Auto Mode that just prints a value")
 

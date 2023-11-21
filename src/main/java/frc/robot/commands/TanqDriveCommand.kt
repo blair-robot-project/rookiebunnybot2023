@@ -19,7 +19,7 @@ class TanqDriveCommand(
 
         val arcade = DifferentialDrive.arcadeDriveIK(
             controller.rightTriggerAxis - controller.leftTriggerAxis,
-            -controller.leftX,
+            -controller.leftX / 1.1,
             true
         )
 
