@@ -1,5 +1,6 @@
 package frc.robot.subsystems
 
+import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import edu.wpi.first.wpilibj2.command.CommandBase
 
@@ -12,7 +13,7 @@ object ExampleSubsystem : SubsystemBase()
      *
      * @return a command
      */
-    fun exampleMethodCommand(): CommandBase = runOnce {
+    fun exampleMethodCommand(): Command = runOnce {
         // Subsystem.runOnce() implicitly add `this` as a required subsystem.
         // TODO: one-time action goes here
     }
