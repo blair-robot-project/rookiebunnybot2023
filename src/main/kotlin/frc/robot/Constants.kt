@@ -17,9 +17,13 @@ object Constants
         const val INTAKE_MOTOR_ID = 0
         const val INTAKE_SOLENOID_FORWARD_CHANNEL = 1
         const val INTAKE_SOLENOID_REVERSE_CHANNEL = 2
+
+        const val INTAKE_VOLTAGE = 4.0
     }
     object ConveyorConstants {
         const val CONVEYOR_MOTOR_ID = 3
+
+        const val CONVEYOR_VOLTAGE = 4.0
     }
 
     object DriveConstants {
