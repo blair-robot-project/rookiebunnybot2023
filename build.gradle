@@ -2,6 +2,7 @@ plugins {
     id "java"
     id "idea"
     id "org.jetbrains.kotlin.jvm" version "1.8.20"
+    id "org.jetbrains.dokka" version "1.8.10"
     id "edu.wpi.first.GradleRIO" version "2024.1.1-beta-3"
 }
 
@@ -52,6 +53,8 @@ def includeDesktopSupport = false
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
 // Also defines JUnit 5.
 dependencies {
+    compileOnly 'org.jetbrains:annotations:24.0.1'
+
     implementation 'org.jetbrains.kotlin:kotlin-stdlib'
 
     implementation wpi.java.deps.wpilib()
@@ -74,7 +77,6 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 
 test {
@@ -112,4 +114,13 @@ tasks.withType(JavaCompile) {
 }
 repositories {
     mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+deployArtifact.jarTask = jar
+wpi.java.configureExecutableTasks(jar)
+wpi.java.configureTestTasks(test)
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs.add '-XDstringConcat=inline'
 }

@@ -7,13 +7,15 @@ import edu.wpi.first.wpilibj2.command.PrintCommand
 import com.pathplanner.lib.auto.NamedCommands
 import com.pathplanner.lib.commands.PathPlannerAuto
 import com.pathplanner.lib.util.ReplanningConfig
+import edu.wpi.first.wpilibj2.command.InstantCommand
 import frc.robot.RobotContainer
 
 object Autos
 {
 
     init{
-        NamedCommands.registerCommand("test1", ExampleCommand())
+        NamedCommands.registerCommand("move", InstantCommand())
+
     }
 
 
@@ -40,6 +42,18 @@ object Autos
         )
 
         return PathPlannerAuto("1ScorePickup")
+    }
+    private fun autoMovement(): Command {
+        AutoBuilder.configureRamsete(
+            RobotContainer.TanqDrive::getPose, // Robot pose supplier
+            RobotContainer.TanqDrive::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+            RobotContainer.TanqDrive::getCurrentSpeeds, // Current ChassisSpeeds supplier
+            RobotContainer.TanqDrive::setSpeed, // Method that will drive the robot given ChassisSpeeds
+            ReplanningConfig(), // Default path replanning config. See the API for the options here
+            RobotContainer.TanqDrive // Reference to this subsystem to set requirements
+        )
+
+        return PathPlannerAuto("RobotAuto")
     }
 
 
