@@ -65,6 +65,13 @@ open class TanqDrive (
         rightLeader.pidController.setReference(rightVelocity, CANSparkMax.ControlType.kVelocity, 0, ffVolts.right, SparkMaxPIDController.ArbFFUnits.kVoltage)
     }
 
+    fun setSpeedVolts(voltageLeft: Double, voltageRight: Double) {
+        leftLeader.setVoltage(voltageLeft)
+        rightLeader.setVoltage(voltageRight)
+    }
+
+
+
     fun getPose(): Pose2d{
         return odometry.poseMeters
     }

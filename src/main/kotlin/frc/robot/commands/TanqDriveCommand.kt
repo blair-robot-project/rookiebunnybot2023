@@ -23,14 +23,16 @@ class TanqDriveCommand(
             true
         )
 
-        val speeds = tanqDrive.kinematics.toChassisSpeeds(
-            DifferentialDriveWheelSpeeds(
-                arcade.left * multiple,
-                arcade.right * multiple
-            )
-        )
+//        val speeds = tanqDrive.kinematics.toChassisSpeeds(
+//            DifferentialDriveWheelSpeeds(
+//                arcade.left * multiple,
+//                arcade.right * multiple
+//            )
+//        )
+//
+//        tanqDrive.setSpeed(speeds)
 
-        tanqDrive.setSpeed(speeds)
+        tanqDrive.setSpeedVolts(arcade.left * 12.0, arcade.right * 12.0)
     }
     override fun isFinished() : Boolean {
         return false

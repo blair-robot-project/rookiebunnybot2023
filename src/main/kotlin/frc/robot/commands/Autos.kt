@@ -8,6 +8,7 @@ import com.pathplanner.lib.auto.NamedCommands
 import com.pathplanner.lib.commands.PathPlannerAuto
 import com.pathplanner.lib.util.ReplanningConfig
 import edu.wpi.first.wpilibj2.command.InstantCommand
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
 import frc.robot.RobotContainer
 
 object Autos
@@ -15,7 +16,8 @@ object Autos
 
     init{
         NamedCommands.registerCommand("move", InstantCommand())
-
+        NamedCommands.registerCommand("ScoreLow", SequentialCommandGroup())
+        NamedCommands.registerCommand("GroundPickup", SequentialCommandGroup())
     }
 
 
