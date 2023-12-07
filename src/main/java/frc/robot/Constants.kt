@@ -21,6 +21,10 @@ object Constants
     object ConveyorConstants {
         const val CONVEYOR_MOTOR_ID = 3
     }
+
+    object DriveConstants {
+        const val TRACKWIDTH = 0.64135
+    }
 }
 
 

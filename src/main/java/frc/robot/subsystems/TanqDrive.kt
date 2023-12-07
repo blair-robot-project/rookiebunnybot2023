@@ -11,9 +11,11 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry
 import edu.wpi.first.wpilibj.RobotBase
+import edu.wpi.first.wpilibj.SPI
 import edu.wpi.first.wpilibj.SerialPort
 import edu.wpi.first.wpilibj.smartdashboard.Field2d
 import edu.wpi.first.wpilibj2.command.SubsystemBase
+import frc.robot.Constants
 
 
 open class TanqDrive (
@@ -28,7 +30,7 @@ open class TanqDrive (
     //below should be the width of the robot's track width in inches
     //this is creating a differential drive kinematics object
     //TODO: Edit trackWidthMeters
-    val kinematics = DifferentialDriveKinematics(1.0)
+    val kinematics = DifferentialDriveKinematics(Constants.DriveConstants.TRACKWIDTH)
     val odometry = DifferentialDriveOdometry(
         Rotation2d.fromDegrees(gyro.fusedHeading.toDouble()),
         leftLeader.encoder.position,
@@ -79,9 +81,7 @@ open class TanqDrive (
 
     companion object {
         fun createTanqDrive(arrId: IntArray, field: Field2d): TanqDrive {
-            val kTrackWidth = 0.381 * 2 // meters
             val kWheelRadius = 0.0508 // meters
-            val kEncoderResolution = 4096
 
             val leftLeader = CANSparkMax(arrId[0], CANSparkMaxLowLevel.MotorType.kBrushless)
             val rightLeader = CANSparkMax(arrId[1], CANSparkMaxLowLevel.MotorType.kBrushless)
@@ -93,7 +93,7 @@ open class TanqDrive (
             leftFollower.follow(leftLeader)
             rightFollower.follow(rightFollower)
 
-            val gyro = AHRS(SerialPort.Port.kMXP)
+            val gyro = AHRS(SPI.Port.kMXP)
 
             /*
             Bellow we are converting from motor rotations to meters per second so that we can feed
@@ -116,7 +116,7 @@ open class TanqDrive (
             val rightPidController = rightLeader.pidController
 
             //these values are not set and need to be changed ********
-            val kP = 6e-5
+            val kP = 0.005
             val kI = 0.0
             val kD = 0.0
             val kIz = 0.0
@@ -142,7 +142,7 @@ open class TanqDrive (
 
 
             //TODO: Change gains
-            val feedForward = DifferentialDriveFeedforward(1.0, 3.0, 4.0, 6.0)
+            val feedForward = DifferentialDriveFeedforward(1.0, 1.0, 1.0, 1.0)
 
             if (RobotBase.isReal()) {
                 return TanqDrive(rightLeader, rightFollower, leftLeader, leftFollower, feedForward, gyro)
