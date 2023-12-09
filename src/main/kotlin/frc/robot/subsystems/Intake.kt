@@ -9,9 +9,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.robot.Constants.IntakeConstants
 
 class Intake(): SubsystemBase() {
+
     private val motor: CANSparkMax = CANSparkMax(IntakeConstants.INTAKE_MOTOR_ID, CANSparkMaxLowLevel.MotorType.kBrushless)
-    private val leftPiston: DoubleSolenoid = DoubleSolenoid(PneumaticsModuleType.CTREPCM, IntakeConstants.INTAKE_SOLENOID_FORWARD_CHANNEL, IntakeConstants.INTAKE_SOLENOID_REVERSE_CHANNEL)
-    private val rightPiston: DoubleSolenoid = DoubleSolenoid(PneumaticsModuleType.CTREPCM, IntakeConstants.INTAKE_SOLENOID_FORWARD_CHANNEL, IntakeConstants.INTAKE_SOLENOID_REVERSE_CHANNEL)
+    private val piston: DoubleSolenoid = DoubleSolenoid(PneumaticsModuleType.CTREPCM, IntakeConstants.INTAKE_SOLENOID_FORWARD_CHANNEL, IntakeConstants.INTAKE_SOLENOID_REVERSE_CHANNEL)
 
     fun runIntake(): Command {
         return this.runOnce { motor.setVoltage(IntakeConstants.INTAKE_VOLTAGE) }
@@ -21,17 +21,19 @@ class Intake(): SubsystemBase() {
         return this.runOnce { motor.setVoltage(-IntakeConstants.INTAKE_VOLTAGE) }
     }
 
+    fun stopIntake(): Command {
+        return this.runOnce{ motor.stopMotor() }
+    }
+
     fun extendPiston(): Command {
         return this.runOnce {
-            leftPiston.set(DoubleSolenoid.Value.kForward)
-            rightPiston.set(DoubleSolenoid.Value.kForward)
+            piston.set(DoubleSolenoid.Value.kForward)
         }
     }
 
     fun retractPiston(): Command {
         return this.runOnce {
-            leftPiston.set(DoubleSolenoid.Value.kReverse)
-            rightPiston.set(DoubleSolenoid.Value.kReverse)
+            piston.set(DoubleSolenoid.Value.kReverse)
         }
     }
 

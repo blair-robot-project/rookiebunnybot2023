@@ -1,5 +1,6 @@
 package frc.robot
 
+import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.TimedRobot
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
@@ -25,7 +26,7 @@ object Robot : TimedRobot()
      * the [autonomousInit] method will set it to the value selected in
      *the  AutoChooser on the dashboard.
      */
-    private var autonomousCommand: Command = Autos.defaultAutonomousCommand
+    private var autonomousCommand: Command = Autos.selectedAutonomousCommand
     val robot = RobotContainer
 
 
@@ -39,7 +40,10 @@ object Robot : TimedRobot()
         // button bindings, and put our autonomous chooser on the dashboard.
 
         SmartDashboard.putData(robot.field)
+        SmartDashboard.putData("Auto Chooser", Autos.autoModeChooser)
         RobotContainer.TanqDrive.defaultCommand = TanqDriveCommand(RobotContainer.driverController, RobotContainer.TanqDrive)
+
+        DriverStation.silenceJoystickConnectionWarning(true)
     }
 
     /**

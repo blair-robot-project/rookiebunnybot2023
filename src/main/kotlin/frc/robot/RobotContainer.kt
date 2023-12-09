@@ -12,6 +12,8 @@ import com.revrobotics.CANSparkMax
 import com.revrobotics.CANSparkMaxLowLevel
 import edu.wpi.first.wpilibj.CAN
 import edu.wpi.first.wpilibj.smartdashboard.Field2d
+import frc.robot.subsystems.Conveyor
+import frc.robot.subsystems.Intake
 import frc.robot.subsystems.TanqDrive.Companion.createTanqDrive
 
 /**
@@ -27,13 +29,19 @@ import frc.robot.subsystems.TanqDrive.Companion.createTanqDrive
  */
 object RobotContainer
 {
-
-
     val field = Field2d()
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
     val driverController = CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT)
-    val TanqDrive = createTanqDrive(intArrayOf(1, 2, 3, 4), field)
+    val mechController = CommandXboxController(OperatorConstants.MECH_CONTROLLER_PORT)
+
+    val TanqDrive = createTanqDrive(intArrayOf(6, 7, 3, 4), field)
+
+    // intake and conveyor have gearings of 3:1 and 5:1, respectively, but are not accounted for
+    // because encoder values are not measured
+
+    val intake = Intake.createIntake()
+    val conveyor = Conveyor.createConveyor()
 
     init
     {
@@ -51,11 +59,10 @@ object RobotContainer
      */
     private fun configureBindings()
     {
-        // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-        Trigger { ExampleSubsystem.exampleCondition() }.onTrue(ExampleCommand())
-
-        // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-        // cancelling on release.
-        driverController.b().whileTrue(ExampleSubsystem.exampleMethodCommand())
+        mechController.a().onTrue(intake.runIntake()).onFalse(intake.stopIntake())
+        mechController.b().onTrue(intake.runIntake()).onFalse(intake.stopIntake())
+        mechController.rightBumper().onTrue(intake.extendPiston())
+        mechController.leftBumper().onTrue(intake.retractPiston())
+        mechController.x().onTrue(conveyor.startConveyor()).onFalse(conveyor.stopConveyor())
     }
 }

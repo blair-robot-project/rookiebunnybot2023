@@ -31,6 +31,7 @@ open class TanqDrive (
     //this is creating a differential drive kinematics object
     //TODO: Edit trackWidthMeters
     val kinematics = DifferentialDriveKinematics(Constants.DriveConstants.TRACKWIDTH)
+
     val odometry = DifferentialDriveOdometry(
         Rotation2d.fromDegrees(gyro.fusedHeading.toDouble()),
         leftLeader.encoder.position,
@@ -38,10 +39,6 @@ open class TanqDrive (
     )
 
     var desiredSpeed: ChassisSpeeds = ChassisSpeeds(0.0, 0.0, 0.0)
-
-    init {
-        val field = Field2d()
-    }
 
     fun getGyroRotation(): Rotation2d {
         return Rotation2d.fromDegrees(gyro.fusedHeading.toDouble())
@@ -70,13 +67,11 @@ open class TanqDrive (
         rightLeader.setVoltage(voltageRight)
     }
 
-
-
     fun getPose(): Pose2d{
         return odometry.poseMeters
     }
 
-    fun getCurrentSpeeds() : ChassisSpeeds{
+    fun getCurrentSpeeds() : ChassisSpeeds {
         return desiredSpeed
     }
     fun resetPose(pose: Pose2d){

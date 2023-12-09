@@ -12,16 +12,17 @@ object Constants
     object OperatorConstants
     {
         const val DRIVER_CONTROLLER_PORT = 0
+        const val MECH_CONTROLLER_PORT = 1
     }
     object IntakeConstants {
-        const val INTAKE_MOTOR_ID = 0
+        const val INTAKE_MOTOR_ID = 10
         const val INTAKE_SOLENOID_FORWARD_CHANNEL = 1
         const val INTAKE_SOLENOID_REVERSE_CHANNEL = 2
 
         const val INTAKE_VOLTAGE = 4.0
     }
     object ConveyorConstants {
-        const val CONVEYOR_MOTOR_ID = 3
+        const val CONVEYOR_MOTOR_ID = 2
 
         const val CONVEYOR_VOLTAGE = 4.0
     }
