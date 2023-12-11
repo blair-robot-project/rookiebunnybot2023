@@ -93,7 +93,7 @@ open class TanqDrive (
             rightLeader.inverted = true
 
             leftFollower.follow(leftLeader)
-            rightFollower.follow(rightFollower)
+            rightFollower.follow(rightLeader)
 
             val gyro = AHRS(SPI.Port.kMXP)
 
