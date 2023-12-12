@@ -14,7 +14,7 @@ class TanqDriveSim(
     private val feedForward: DifferentialDriveFeedforward,
     private val gyro: AHRS,
     private val field: Field2d
-): TanqDrive(rightLeader, rightFollower, leftLeader, leftFollower, feedForward, gyro) {
+): TanqDrive(rightLeader, leftLeader, feedForward, gyro) {
 
     private var leftDist = 0.0
     private var rightDist = 0.0

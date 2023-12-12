@@ -12,7 +12,6 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry
 import edu.wpi.first.wpilibj.RobotBase
 import edu.wpi.first.wpilibj.SPI
-import edu.wpi.first.wpilibj.SerialPort
 import edu.wpi.first.wpilibj.smartdashboard.Field2d
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.robot.Constants
@@ -20,9 +19,7 @@ import frc.robot.Constants
 
 open class TanqDrive (
     private val rightLeader: CANSparkMax,
-    private val rightFollower: CANSparkMax,
     private val leftLeader: CANSparkMax,
-    private val leftFollower: CANSparkMax,
     private val feedForward: DifferentialDriveFeedforward,
     private val gyro: AHRS
 ) : SubsystemBase() {
@@ -63,6 +60,8 @@ open class TanqDrive (
     }
 
     fun setSpeedVolts(voltageLeft: Double, voltageRight: Double) {
+        println(voltageLeft + voltageRight)
+
         leftLeader.setVoltage(voltageLeft)
         rightLeader.setVoltage(voltageRight)
     }
@@ -91,9 +90,10 @@ open class TanqDrive (
             val rightFollower = CANSparkMax(arrId[3], CANSparkMaxLowLevel.MotorType.kBrushless)
 
             rightLeader.inverted = true
+            leftLeader.inverted = false
 
-            leftFollower.follow(leftLeader)
-            rightFollower.follow(rightLeader)
+            leftFollower.follow(leftLeader, false)
+            rightFollower.follow(rightLeader, false)
 
             val gyro = AHRS(SPI.Port.kMXP)
 
@@ -142,12 +142,17 @@ open class TanqDrive (
             rightPidController.setFF(kFF)
             rightPidController.setOutputRange(kMinOutput, kMaxOutput)
 
+            leftLeader.burnFlash()
+            rightLeader.burnFlash()
+            leftFollower.burnFlash()
+            rightFollower.burnFlash()
+
 
             //TODO: Change gains
             val feedForward = DifferentialDriveFeedforward(1.0, 1.0, 1.0, 1.0)
 
             if (RobotBase.isReal()) {
-                return TanqDrive(rightLeader, rightFollower, leftLeader, leftFollower, feedForward, gyro)
+                return TanqDrive(rightLeader, leftLeader, feedForward, gyro)
             }
             return TanqDriveSim(rightLeader, rightFollower, leftLeader, leftFollower, feedForward, gyro, field)
         }

@@ -1,6 +1,5 @@
 package frc.robot.commands
 
-import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds
 import edu.wpi.first.wpilibj.drive.DifferentialDrive
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
@@ -19,7 +18,7 @@ class TanqDriveCommand(
 
         val arcade = DifferentialDrive.arcadeDriveIK(
             controller.rightTriggerAxis - controller.leftTriggerAxis,
-            -controller.leftX / 1.1,
+            -controller.leftX,
             true
         )
 
@@ -32,7 +31,7 @@ class TanqDriveCommand(
 //
 //        tanqDrive.setSpeed(speeds)
 
-        tanqDrive.setSpeedVolts(arcade.left * 8.0, arcade.right * 8.0)
+        tanqDrive.setSpeedVolts(arcade.left * 12.0, arcade.right * 12.0)
     }
     override fun isFinished() : Boolean {
         return false
