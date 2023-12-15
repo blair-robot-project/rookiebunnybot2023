@@ -41,7 +41,7 @@ object Robot : TimedRobot()
 
         SmartDashboard.putData(robot.field)
         SmartDashboard.putData("Auto Chooser", Autos.autoModeChooser)
-        RobotContainer.TanqDrive.defaultCommand = TanqDriveCommand(RobotContainer.driverController, RobotContainer.TanqDrive)
+        RobotContainer.drive.defaultCommand = TanqDriveCommand(RobotContainer.driveController, RobotContainer.drive)
 
         DriverStation.silenceJoystickConnectionWarning(true)
     }
@@ -116,7 +116,7 @@ object Robot : TimedRobot()
     /** This method is called once when the robot is first started up.  */
     override fun simulationInit()
     {
-        RobotContainer.TanqDrive.defaultCommand = TanqDriveCommand(RobotContainer.driverController, RobotContainer.TanqDrive)
+        RobotContainer.drive.defaultCommand = TanqDriveCommand(RobotContainer.driveController, RobotContainer.drive)
     }
 
     /** This method is called periodically whilst in simulation.  */

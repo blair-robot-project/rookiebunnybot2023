@@ -33,7 +33,7 @@ class TanqDriveCommand(
 
         tanqDrive.setSpeedVolts(arcade.left * 12.0, arcade.right * 12.0)
     }
-    override fun isFinished() : Boolean {
+    override fun isFinished(): Boolean {
         return false
     }
 }

@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.robot.Constants
 
 
-open class TanqDrive (
+open class TanqDrive(
     private val rightLeader: CANSparkMax,
     private val leftLeader: CANSparkMax,
     private val feedForward: DifferentialDriveFeedforward,
@@ -41,7 +41,7 @@ open class TanqDrive (
         return Rotation2d.fromDegrees(gyro.fusedHeading.toDouble())
     }
 
-    fun setSpeed(desiredSpeed : ChassisSpeeds){
+    fun setSpeed(desiredSpeed : ChassisSpeeds) {
         //Here we use the ChassisSpeeds object to
 
         this.desiredSpeed = desiredSpeed
@@ -60,23 +60,29 @@ open class TanqDrive (
     }
 
     fun setSpeedVolts(voltageLeft: Double, voltageRight: Double) {
-        println(voltageLeft + voltageRight)
-
         leftLeader.setVoltage(voltageLeft)
         rightLeader.setVoltage(voltageRight)
     }
 
-    fun getPose(): Pose2d{
+    fun setSpeedVolts(voltage: Double) {
+        setSpeedVolts(voltage, voltage)
+    }
+
+    fun getDriveVel(): Double {
+        return (leftLeader.encoder.velocity + rightLeader.encoder.velocity) / 2
+    }
+
+    fun getPose(): Pose2d {
         return odometry.poseMeters
     }
 
-    fun getCurrentSpeeds() : ChassisSpeeds {
+    fun getCurrentSpeeds(): ChassisSpeeds {
         return desiredSpeed
     }
-    fun resetPose(pose: Pose2d){
+    fun resetPose(pose: Pose2d) {
         odometry.resetPosition(getGyroRotation(), leftLeader.encoder.position, rightLeader.encoder.position, pose)
     }
-    override fun periodic(){
+    override fun periodic() {
         odometry.update(getGyroRotation(), leftLeader.encoder.position, rightLeader.encoder.position)
     }
 

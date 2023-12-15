@@ -13,6 +13,9 @@ class Intake(): SubsystemBase() {
     private val motor: CANSparkMax = CANSparkMax(IntakeConstants.INTAKE_MOTOR_ID, CANSparkMaxLowLevel.MotorType.kBrushless)
     private val piston: DoubleSolenoid = DoubleSolenoid(PneumaticsModuleType.CTREPCM, IntakeConstants.INTAKE_SOLENOID_FORWARD_CHANNEL, IntakeConstants.INTAKE_SOLENOID_REVERSE_CHANNEL)
 
+    init {
+        motor.inverted = true
+    }
     fun runIntake(): Command {
         return this.runOnce { motor.setVoltage(IntakeConstants.INTAKE_VOLTAGE) }
     }

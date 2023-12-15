@@ -15,17 +15,16 @@ import frc.robot.RobotContainer
 object Autos
 {
     init {
-        NamedCommands.registerCommand("move", InstantCommand())
         NamedCommands.registerCommand("ScoreLow", SequentialCommandGroup())
         NamedCommands.registerCommand("GroundPickup", SequentialCommandGroup())
 
         AutoBuilder.configureRamsete(
-            RobotContainer.TanqDrive::getPose, // Robot pose supplier
-            RobotContainer.TanqDrive::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
-            RobotContainer.TanqDrive::getCurrentSpeeds, // Current ChassisSpeeds supplier
-            RobotContainer.TanqDrive::setSpeed, // Method that will drive the robot given ChassisSpeeds
+            RobotContainer.drive::getPose, // Robot pose supplier
+            RobotContainer.drive::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+            RobotContainer.drive::getCurrentSpeeds, // Current ChassisSpeeds supplier
+            RobotContainer.drive::setSpeed, // Method that will drive the robot given ChassisSpeeds
             ReplanningConfig(), // Default path replanning config. See the API for the options here
-            RobotContainer.TanqDrive // Reference to this subsystem to set requirements
+            RobotContainer.drive // Reference to this subsystem to set requirements
         )
     }
 
