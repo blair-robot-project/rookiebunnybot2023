@@ -16,19 +16,24 @@ object Constants
     }
     object IntakeConstants {
         const val INTAKE_MOTOR_ID = 10
-        const val INTAKE_SOLENOID_FORWARD_CHANNEL = 1
-        const val INTAKE_SOLENOID_REVERSE_CHANNEL = 2
+        const val INTAKE_SOLENOID_FORWARD_CHANNEL = 0
+        const val INTAKE_SOLENOID_REVERSE_CHANNEL = 1
 
-        const val INTAKE_VOLTAGE = 4.0
+        const val INTAKE_VOLTAGE = 6.0
     }
     object ConveyorConstants {
         const val CONVEYOR_MOTOR_ID = 2
 
-        const val CONVEYOR_VOLTAGE = 4.0
+        const val CONVEYOR_VOLTAGE = 8.0
     }
 
     object DriveConstants {
         const val TRACKWIDTH = 0.64135
+
+        const val kV = 1.674358177011482
+        const val kS = 0.2745919741243788
+
+        const val MAX_LINEAR_SPEED = (12.0 - kS) / kV
     }
 }
 

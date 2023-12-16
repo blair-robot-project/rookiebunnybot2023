@@ -14,7 +14,7 @@ class Intake(): SubsystemBase() {
     private val piston: DoubleSolenoid = DoubleSolenoid(PneumaticsModuleType.CTREPCM, IntakeConstants.INTAKE_SOLENOID_FORWARD_CHANNEL, IntakeConstants.INTAKE_SOLENOID_REVERSE_CHANNEL)
 
     init {
-        motor.inverted = true
+        motor.inverted = false
         motor.setSmartCurrentLimit(20)
     }
     fun runIntake(): Command {

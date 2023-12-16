@@ -3,7 +3,6 @@ package frc.robot.subsystems
 import com.kauailabs.navx.frc.AHRS
 import com.revrobotics.CANSparkMax
 import com.revrobotics.CANSparkMaxLowLevel
-import com.revrobotics.SparkMaxPIDController
 import edu.wpi.first.math.controller.DifferentialDriveFeedforward
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
@@ -15,7 +14,6 @@ import edu.wpi.first.wpilibj.SPI
 import edu.wpi.first.wpilibj.smartdashboard.Field2d
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.robot.Constants
-import kotlin.math.max
 
 
 open class TanqDrive(
@@ -28,6 +26,7 @@ open class TanqDrive(
     //below should be the width of the robot's track width in inches
     //this is creating a differential drive kinematics object
     //TODO: Edit trackWidthMeters
+
     val kinematics = DifferentialDriveKinematics(Constants.DriveConstants.TRACKWIDTH)
 
     val odometry = DifferentialDriveOdometry(
@@ -37,6 +36,7 @@ open class TanqDrive(
     )
 
     var desiredSpeed: ChassisSpeeds = ChassisSpeeds(0.0, 0.0, 0.0)
+
 
     fun getGyroRotation(): Rotation2d {
         return Rotation2d.fromDegrees(gyro.fusedHeading.toDouble())
@@ -48,6 +48,10 @@ open class TanqDrive(
         this.desiredSpeed = desiredSpeed
 
         val wheelSpeeds = kinematics.toWheelSpeeds(desiredSpeed)
+
+        println(wheelSpeeds)
+
+        wheelSpeeds.desaturate(Constants.DriveConstants.MAX_LINEAR_SPEED)
         // Left velocity
         val leftVelocity = wheelSpeeds.leftMetersPerSecond
         // Right velocity
@@ -55,9 +59,12 @@ open class TanqDrive(
 
         val ffVolts = feedForward.calculate(leftLeader.encoder.velocity, leftVelocity, rightLeader.encoder.velocity, rightVelocity, 0.02)
 
-        leftLeader.pidController.setReference(leftVelocity, CANSparkMax.ControlType.kVelocity, 0,  ffVolts.left, SparkMaxPIDController.ArbFFUnits.kVoltage)
+        leftLeader.setVoltage(ffVolts.left)
+        rightLeader.setVoltage(ffVolts.right)
 
-        rightLeader.pidController.setReference(rightVelocity, CANSparkMax.ControlType.kVelocity, 0, ffVolts.right, SparkMaxPIDController.ArbFFUnits.kVoltage)
+        //leftLeader.pidController.setReference(leftVelocity, CANSparkMax.ControlType.kVelocity, 0,  ffVolts.left, SparkMaxPIDController.ArbFFUnits.kVoltage)
+
+        //rightLeader.pidController.setReference(rightVelocity, CANSparkMax.ControlType.kVelocity, 0, ffVolts.right, SparkMaxPIDController.ArbFFUnits.kVoltage)
     }
 
     fun setSpeedVolts(voltageLeft: Double, voltageRight: Double) {
@@ -66,7 +73,8 @@ open class TanqDrive(
     }
 
     fun setSpeedVolts(voltage: Double) {
-        setSpeedVolts(voltage, voltage)
+        leftLeader.setVoltage(voltage)
+        rightLeader.setVoltage(voltage)
     }
 
     fun getDriveVel(): Double {
@@ -96,6 +104,11 @@ open class TanqDrive(
             val leftFollower = CANSparkMax(arrId[2], CANSparkMaxLowLevel.MotorType.kBrushless)
             val rightFollower = CANSparkMax(arrId[3], CANSparkMaxLowLevel.MotorType.kBrushless)
 
+            leftLeader.setSmartCurrentLimit(40)
+            rightLeader.setSmartCurrentLimit(40)
+            leftFollower.setSmartCurrentLimit(40)
+            rightFollower.setSmartCurrentLimit(40)
+
             rightLeader.inverted = true
             leftLeader.inverted = false
 
@@ -109,7 +122,7 @@ open class TanqDrive(
             these values into the PID. The gearing is a placeholder for the ratio between
             1 full motor spin to 1 wheel spin.
              */
-            val gearing = 0.25
+            val gearing = 1 / 5.86
 
             leftLeader.encoder.positionConversionFactor = 2 * Math.PI * kWheelRadius * gearing
             rightLeader.encoder.positionConversionFactor = 2 * Math.PI * kWheelRadius * gearing
@@ -125,11 +138,11 @@ open class TanqDrive(
             val rightPidController = rightLeader.pidController
 
             //these values are not set and need to be changed ********
-            val kP = 0.005
-            val kI = 0.0
+            val kP = 0.0005
+            val kI = 0.005
             val kD = 0.0
             val kIz = 0.0
-            val kFF = 0.0
+            val kFF = 0.75
             val kMaxOutput = 1.0
             val kMinOutput = -1.0
             val maxRPM = 5700
@@ -156,7 +169,11 @@ open class TanqDrive(
 
 
             //TODO: Change gains
-            val feedForward = DifferentialDriveFeedforward(1.0, 1.0, 1.0, 1.0)
+            val feedForward = DifferentialDriveFeedforward(
+                Constants.DriveConstants.kV,
+                1.0,
+                Constants.DriveConstants.kV,
+                1.0)
 
             if (RobotBase.isReal()) {
                 return TanqDrive(rightLeader, leftLeader, feedForward, gyro)

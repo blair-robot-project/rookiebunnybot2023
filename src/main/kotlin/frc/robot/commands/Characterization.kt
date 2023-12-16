@@ -41,6 +41,7 @@ class Characterization(
             voltageConsumer.accept(0.0)
         } else {
             val voltage = (timer.get() - startDelaySecs) * rampRateVoltsPerSec * if (forward) 1 else -1
+            println(voltage)
             voltageConsumer.accept(voltage)
             data.add(velocitySupplier.asDouble, voltage)
         }
@@ -79,7 +80,7 @@ class Characterization(
     }
 
     companion object {
-        private const val startDelaySecs = 1.5
+        private const val startDelaySecs = 0.0
         private const val rampRateVoltsPerSec = 0.085
     }
 }

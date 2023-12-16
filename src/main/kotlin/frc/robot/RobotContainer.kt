@@ -1,21 +1,11 @@
 package frc.robot
 
-import edu.wpi.first.wpilibj.motorcontrol.MotorController
-import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import edu.wpi.first.wpilibj2.command.button.Trigger
 import frc.robot.Constants.OperatorConstants
 import frc.robot.commands.Autos
-import frc.robot.commands.ExampleCommand
-import frc.robot.subsystems.ExampleSubsystem
-import com.revrobotics.CANSparkMax
-import com.revrobotics.CANSparkMaxLowLevel
-import edu.wpi.first.wpilibj.CAN
-import edu.wpi.first.wpilibj.XboxController
 import edu.wpi.first.wpilibj.smartdashboard.Field2d
-import edu.wpi.first.wpilibj2.command.button.JoystickButton
 import frc.robot.commands.Characterization
-import frc.robot.commands.TanqDriveCommand
 import frc.robot.subsystems.Conveyor
 import frc.robot.subsystems.Intake
 import frc.robot.subsystems.TanqDrive.Companion.createTanqDrive
@@ -65,14 +55,16 @@ object RobotContainer
     {
         mechController.a().onTrue(
             intake.runIntake()
-        ).onFalse(
+        ).toggleOnFalse(
             intake.stopIntake()
         )
+
         mechController.b().onTrue(
-            intake.runIntake()
-        ).onFalse(
+            intake.runIntakeReverse()
+        ).toggleOnFalse(
             intake.stopIntake()
         )
+
 
         mechController.rightBumper().onTrue(
             intake.extendPiston()
@@ -88,14 +80,12 @@ object RobotContainer
         )
 
 
-        driveController.x().onTrue(Characterization(
+        driveController.start().toggleOnTrue(Characterization(
             this.drive,
-            true,
+            false,
             "Tank Drive",
             this.drive::setSpeedVolts,
             this.drive::getDriveVel
-        )).onFalse(
-            TanqDriveCommand(driveController, drive)
-        )
+        ))
     }
 }
