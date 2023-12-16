@@ -10,6 +10,10 @@ class Conveyor(): SubsystemBase() {
 
     private val motor: CANSparkMax = CANSparkMax(ConveyorConstants.CONVEYOR_MOTOR_ID, CANSparkMaxLowLevel.MotorType.kBrushless)
 
+    init {
+        motor.setSmartCurrentLimit(20)
+    }
+
     fun startConveyor(): Command {
         return this.runOnce { motor.setVoltage(ConveyorConstants.CONVEYOR_VOLTAGE)}
     }

@@ -15,6 +15,7 @@ class Intake(): SubsystemBase() {
 
     init {
         motor.inverted = true
+        motor.setSmartCurrentLimit(20)
     }
     fun runIntake(): Command {
         return this.runOnce { motor.setVoltage(IntakeConstants.INTAKE_VOLTAGE) }
